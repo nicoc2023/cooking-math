@@ -59,17 +59,17 @@ const ESCENAS = [
     ini: [
       ["pepperoni.png", 16, 54, 19],
       ["queso.png", 65, 54, 19],
-      ["pizza_salsa.png", 25, 55, 50],
+      ["pizza_salsa.png", 25, 59, 50],
       ["champinones.png", 3, 68, 19],
       ["pimenton.png", 78, 68, 19]
     ],
-    fin: [["pizza_toppings.png", 25, 55, 50]] },
+    fin: [["pizza_toppings.png", 25, 58, 50]] },
   { fondo: "fondo_horno.png",
     ini: [],
     fin: [] }
 ];
 
-const SEGUNDOS = 60, VIDAS = 4;
+const SEGUNDOS = 270, VIDAS = 4;
 const COLORES = ["#E8503A", "#FFD66B", "#7ED6A0", "#7EC8F0", "#FFB3C7"];
 const $ = s => document.querySelector(s);
 
