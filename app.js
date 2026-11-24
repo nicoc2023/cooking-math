@@ -40,12 +40,12 @@ const ESCENAS = [
   { fondo: "fondo_cocina.png",
     ini: [
       ["bowl_vacio.png", 31, 52, 38],
-      ["harina.png", 17, 50, 17],
-      ["azucar.png", 66, 51, 17],
-      ["agua.png", 4, 65, 17],
-      ["sal.png", 79, 65, 17]
+      ["harina.png", 17, 53, 17],
+      ["azucar.png", 66, 54, 17],
+      ["agua.png", 4, 69, 17],
+      ["sal.png", 79, 69, 17]
     ],
-    fin: [["bowl_masa.png", 29, 52, 42]] },
+    fin: [["bowl_masa.png", 29, 45, 42]] },
   { fondo: "fondo_cocina.png",
     ini: [
       ["pizza_cruda.png", 10, 53, 62],
@@ -59,7 +59,7 @@ const ESCENAS = [
     ini: [
       ["pepperoni.png", 16, 54, 19],
       ["queso.png", 65, 54, 19],
-      ["pizza_salsa.png", 25, 59, 50],
+      ["pizza_salsa.png", 25, 62, 50],
       ["champinones.png", 3, 68, 19],
       ["pimenton.png", 78, 68, 19]
     ],
@@ -69,7 +69,7 @@ const ESCENAS = [
     fin: [] }
 ];
 
-const SEGUNDOS = 270, VIDAS = 4;
+const SEGUNDOS = 300, VIDAS = 4;
 const COLORES = ["#E8503A", "#FFD66B", "#7ED6A0", "#7EC8F0", "#FFB3C7"];
 const $ = s => document.querySelector(s);
 
