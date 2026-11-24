@@ -29,8 +29,8 @@ const EJERCICIOS = [
     opciones: { A: String.raw`100 \text{ m}^2`, B: String.raw`200 \text{ m}^2`, C: String.raw`400 \text{ m}^2`, D: String.raw`150 \text{ m}^2` },
     correcta: "B" },
   { pregunta: String.raw`\text{Calcule el valor de la siguiente integral doble sobre la región rectangular } R = [0,2] \times [1,3]: \\ \int_{1}^{3} \int_{0}^{2} (2x+y) \, dx \, dy`,
-    opciones: { A: String.raw`12`, B: String.raw`14`, C: String.raw`16`, D: String.raw`20` },
-    correcta: "C" }
+    opciones: { A: String.raw`12`, B: String.raw`14`, C: String.raw`20`, D: String.raw`16` },
+    correcta: "D" }
 ];
 // === FIN EJERCICIOS ===
 
@@ -45,7 +45,7 @@ const ESCENAS = [
       ["agua.png", 4, 65, 17],
       ["sal.png", 79, 65, 17]
     ],
-    fin: [["bowl_masa.png", 29, 48, 42]] },
+    fin: [["bowl_masa.png", 29, 52, 42]] },
   { fondo: "fondo_cocina.png",
     ini: [
       ["pizza_cruda.png", 10, 53, 62],
@@ -69,7 +69,7 @@ const ESCENAS = [
     fin: [] }
 ];
 
-const SEGUNDOS = 300, VIDAS = 4;
+const SEGUNDOS = 60, VIDAS = 4;
 const COLORES = ["#E8503A", "#FFD66B", "#7ED6A0", "#7EC8F0", "#FFB3C7"];
 const $ = s => document.querySelector(s);
 
