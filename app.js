@@ -35,34 +35,35 @@ const EJERCICIOS = [
 // === FIN EJERCICIOS ===
 
 // Escenas: cada imagen es [archivo, left%, top%, ancho%] dentro del bloque superior.
+// Escenas: cada imagen es [archivo, left%, top%, ancho%] dentro del bloque superior.
 const ESCENAS = [
   { fondo: "fondo_cocina.png",
     ini: [
-      ["bowl_vacio.png", 31, 53, 38],
-      ["agua.png", 4, 56, 17],
-      ["harina.png", 16, 43, 17],
-      ["azucar.png", 67, 43, 17],
-      ["sal.png", 79, 56, 17]
+      ["bowl_vacio.png", 31, 61, 38],
+      ["harina.png", 17, 50, 17],
+      ["azucar.png", 66, 51, 17],
+      ["agua.png", 4, 65, 17],
+      ["sal.png", 79, 65, 17]
     ],
-    fin: [["bowl_masa.png", 29, 48, 42]] },
+    fin: [["bowl_masa.png", 29, 56, 42]] },
   { fondo: "fondo_cocina.png",
     ini: [
-      ["pizza_cruda.png", 10, 52, 62],
-      ["cucharon_lleno.png", 64, 34, 32]
+      ["pizza_cruda.png", 10, 62, 62],
+      ["cucharon_lleno.png", 64, 44, 32]
     ],
     fin: [
-      ["pizza_salsa.png", 10, 52, 62],
-      ["cucharon_vacio.png", 64, 34, 32]
+      ["pizza_salsa.png", 10, 62, 62],
+      ["cucharon_vacio.png", 64, 44, 32]
     ] },
   { fondo: "fondo_cocina.png",
     ini: [
-      ["pizza_salsa.png", 25, 54, 50],
-      ["champinones.png", 3, 58, 19],
-      ["pepperoni.png", 15, 43, 19],
-      ["queso.png", 66, 43, 19],
-      ["pimenton.png", 78, 58, 19]
+      ["pepperoni.png", 16, 54, 19],
+      ["queso.png", 65, 54, 19],
+      ["pizza_salsa.png", 25, 64, 50],
+      ["champinones.png", 3, 68, 19],
+      ["pimenton.png", 78, 68, 19]
     ],
-    fin: [["pizza_toppings.png", 25, 54, 50]] },
+    fin: [["pizza_toppings.png", 25, 64, 50]] },
   { fondo: "fondo_horno.png",
     ini: [],
     fin: [] } // el escenario 4 muestra "¡Lo lograste!" en lugar de una imagen
