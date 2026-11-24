@@ -49,11 +49,11 @@ const ESCENAS = [
   { fondo: "fondo_cocina.png",
     ini: [
       ["pizza_cruda.png", 10, 53, 62],
-      ["cucharon_lleno.png", 64, 30, 32]
+      ["cucharon_lleno.png", 64, 34, 32]
     ],
     fin: [
       ["pizza_salsa.png", 10, 53, 62],
-      ["cucharon_vacio.png", 64, 30, 32]
+      ["cucharon_vacio.png", 64, 34, 32]
     ] },
   { fondo: "fondo_cocina.png",
     ini: [
