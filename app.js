@@ -35,7 +35,6 @@ const EJERCICIOS = [
 // === FIN EJERCICIOS ===
 
 // Escenas: cada imagen es [archivo, left%, top%, ancho%] dentro del bloque superior.
-// Escenas: cada imagen es [archivo, left%, top%, ancho%] dentro del bloque superior.
 const ESCENAS = [
   { fondo: "fondo_cocina.png",
     ini: [
@@ -76,7 +75,7 @@ const $ = s => document.querySelector(s);
 firebase.initializeApp(firebaseConfig);
 const sala = firebase.database().ref("sala");
 
-let miId = null, esAdmin = false, estado = null, grupos = [], g = null;
+let miId = null, grupos = [], g = null;
 
 /* ---------- Utilidades ---------- */
 function mostrar(id) {
@@ -118,7 +117,7 @@ async function negro(accion) { // transición negra entre pantallas
   t.classList.remove("on");
 }
 
-/* ---------- Lobby / Espera ---------- */
+/* ---------- Registro e inicio inmediato (modo libre, sin anfitrión) ---------- */
 $("#btnUnirse").onclick = async () => {
   const btn = $("#btnUnirse");
   const nombre = $("#inGrupo").value.trim();
@@ -141,10 +140,9 @@ $("#btnUnirse").onclick = async () => {
       creado: firebase.database.ServerValue.TIMESTAMP
     });
     miId = ref.key;
-    localStorage.setItem("cm_miId", miId);
+    try { localStorage.setItem("cm_miId", miId); } catch (e) { /* modo privado: no es crítico */ }
     $("#msgLobby").textContent = "";
-    mostrar("espera");
-    chequearInicio();
+    empezar();
   } catch (err) {
     console.error("Error al unirse:", err);
     $("#msgLobby").textContent = "Error de conexión con la sala. Revisa tu internet.";
@@ -153,80 +151,28 @@ $("#btnUnirse").onclick = async () => {
   }
 };
 
-/* ---------- Anfitrión ---------- */
-$("#btnAdmin").onclick = () => {
-  if (prompt("Clave del anfitrión:") === "admin123") {
-    esAdmin = true;
-    mostrar("admin");
-    pintarAdmin();
-  }
-};
-$("#btnIniciar").onclick = () => sala.child("estado").set("jugando");
-$("#btnReiniciar").onclick = () => {
-  if (confirm("¿Borrar todos los grupos?")) {
-    localStorage.removeItem("cm_miId");
-    sala.set({ estado: "lobby" });
-  }
-};
-
-function pintarAdmin() {
-  const orden = [...grupos].sort((a, b) => (b.puntos - a.puntos) || (a.tiempo - b.tiempo));
-  $("#listaGrupos").innerHTML = orden.length
-    ? orden.map((x, i) => {
-        const estadoGrupo = x.terminado
-          ? (x.vidas > 0 ? "✅ Terminado" : "💔 Game Over")
-          : `🔥 Jugando · ${"❤️".repeat(Math.max(0, x.vidas ?? VIDAS))}`;
-        return `<li>
-          <b class="pts">${x.puntos || 0} pts</b>
-          <b>${i + 1}. ${esc(x.nombre)}</b>
-          <small>${esc(x.integrantes)} · <strong>${estadoGrupo}</strong></small>
-        </li>`;
-      }).join("")
-    : "<li>Aún no hay grupos conectados…</li>";
-}
-/* ---------- Escuchas en tiempo real ---------- */
-sala.child("estado").on("value", s => {
-  estado = s.val();
-  chequearInicio();
-});
-
-sala.child("grupos").on("value", snap => {
-  if (miId && !snap.hasChild(miId)) {
-    localStorage.removeItem("cm_miId");
-    location.reload();
-    return;
-  }
+/* ---------- Clasificación en tiempo real ---------- */
+function leerGrupos(snap) {
   grupos = [];
   snap.forEach(c => {
     const val = c.val();
     if (val && val.nombre) grupos.push({ id: c.key, ...val });
   });
-  if (esAdmin) pintarAdmin();
   pintarRanking();
-});
+}
+sala.child("grupos").on("value", leerGrupos);
 
 // Re-sincroniza cuando el celular vuelve de segundo plano
 document.addEventListener("visibilitychange", () => {
   if (!document.hidden) {
     firebase.database().goOnline();
-    sala.child("grupos").once("value", snap => {
-      grupos = [];
-      snap.forEach(c => {
-        const val = c.val();
-        if (val && val.nombre) grupos.push({ id: c.key, ...val });
-      });
-      if (esAdmin) pintarAdmin();
-      pintarRanking();
-    });
+    sala.child("grupos").once("value", leerGrupos);
   }
 });
 
-function chequearInicio() {
-  if (miId && estado === "jugando" && !g) empezar();
-}
-
 /* ---------- Juego ---------- */
 function empezar() {
+  if (g) return; // evita iniciar dos veces
   g = { i: 0, vidas: VIDAS, puntos: 0, tiempo: 0, t0: 0, timer: null, activo: false };
   negro(() => { mostrar("juego"); cargarEscena(); });
 }
@@ -341,11 +287,13 @@ function terminar(gameOver) {
 
 function pintarRanking() {
   const medallas = ["🥇", "🥈", "🥉"];
-  const orden = [...grupos].sort((a, b) => (b.puntos - a.puntos) || (a.tiempo - b.tiempo));
+  const orden = grupos
+    .filter(x => x.terminado === true) // solo grupos que ya finalizaron (4 escenarios o sin vidas)
+    .sort((a, b) => ((b.puntos || 0) - (a.puntos || 0)) || ((a.tiempo || 0) - (b.tiempo || 0)));
   $("#ranking").innerHTML = orden.map((x, i) => `
     <tr class="${x.id === miId ? "yo" : ""}">
       <td class="puesto"><span>${medallas[i] || (i + 1)}</span> ${esc(x.nombre)}</td>
-      <td class="integ">${String(x.integrantes).split(", ").map(esc).join("<br>")}${x.terminado ? "" : "<br><em>jugando…</em>"}</td>
-      <td><span class="pts-badge">${x.puntos}</span></td>
+      <td class="integ">${String(x.integrantes || "").split(", ").map(esc).join("<br>")}</td>
+      <td><span class="pts-badge">${x.puntos || 0}</span></td>
     </tr>`).join("");
 }
