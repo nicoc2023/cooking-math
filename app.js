@@ -120,46 +120,110 @@ async function negro(accion) { // transición negra entre pantallas
 
 /* ---------- Lobby / Espera ---------- */
 $("#btnUnirse").onclick = async () => {
-  const nombre = $("#inGrupo").value.trim(), integ = $("#inIntegrantes").value.trim().replace(/\n+/g, ", ");
-  if (!nombre || !integ) { $("#msgLobby").textContent = "Escribe el grupo y los integrantes."; return; }
-  const ref = sala.child("grupos").push({ nombre, integrantes: integ, puntos: 0, vidas: VIDAS, tiempo: 0, terminado: false });
-  miId = ref.key;
-  mostrar("espera");
-  chequearInicio();
+  const btn = $("#btnUnirse");
+  const nombre = $("#inGrupo").value.trim();
+  const integ = $("#inIntegrantes").value.trim().replace(/\n+/g, ", ");
+  if (!nombre || !integ) {
+    $("#msgLobby").textContent = "Escribe el grupo y los integrantes.";
+    return;
+  }
+  btn.disabled = true;
+  $("#msgLobby").textContent = "Conectando a la sala…";
+  try {
+    const ref = sala.child("grupos").push();
+    await ref.set({
+      nombre,
+      integrantes: integ,
+      puntos: 0,
+      vidas: VIDAS,
+      tiempo: 0,
+      terminado: false,
+      creado: firebase.database.ServerValue.TIMESTAMP
+    });
+    miId = ref.key;
+    localStorage.setItem("cm_miId", miId);
+    $("#msgLobby").textContent = "";
+    mostrar("espera");
+    chequearInicio();
+  } catch (err) {
+    console.error("Error al unirse:", err);
+    $("#msgLobby").textContent = "Error de conexión con la sala. Revisa tu internet.";
+  } finally {
+    btn.disabled = false;
+  }
 };
 
 /* ---------- Anfitrión ---------- */
 $("#btnAdmin").onclick = () => {
-  if (prompt("Clave del anfitrión:") === "admin123") { esAdmin = true; mostrar("admin"); pintarAdmin(); }
+  if (prompt("Clave del anfitrión:") === "admin123") {
+    esAdmin = true;
+    mostrar("admin");
+    pintarAdmin();
+  }
 };
 $("#btnIniciar").onclick = () => sala.child("estado").set("jugando");
-$("#btnReiniciar").onclick = () => { if (confirm("¿Borrar todos los grupos?")) sala.set({ estado: "lobby" }); };
+$("#btnReiniciar").onclick = () => {
+  if (confirm("¿Borrar todos los grupos?")) {
+    localStorage.removeItem("cm_miId");
+    sala.set({ estado: "lobby" });
+  }
+};
 
 function pintarAdmin() {
   const orden = [...grupos].sort((a, b) => (b.puntos - a.puntos) || (a.tiempo - b.tiempo));
   $("#listaGrupos").innerHTML = orden.length
     ? orden.map((x, i) => {
-        const estadoTxt = x.vidas <= 0 ? "💔 Game Over"
-          : x.terminado ? "✅ Terminado"
-          : "Jugando " + "❤️".repeat(x.vidas);
-        return `<li><b class="pts">${x.puntos} pts</b>
+        const estadoGrupo = x.terminado
+          ? (x.vidas > 0 ? "✅ Terminado" : "💔 Game Over")
+          : `🔥 Jugando · ${"❤️".repeat(Math.max(0, x.vidas ?? VIDAS))}`;
+        return `<li>
+          <b class="pts">${x.puntos || 0} pts</b>
           <b>${i + 1}. ${esc(x.nombre)}</b>
-          <small>${esc(x.integrantes)}</small>
-          <small>${estadoTxt}</small></li>`;
+          <small>${esc(x.integrantes)} · <strong>${estadoGrupo}</strong></small>
+        </li>`;
       }).join("")
     : "<li>Aún no hay grupos conectados…</li>";
 }
-
 /* ---------- Escuchas en tiempo real ---------- */
-sala.child("estado").on("value", s => { estado = s.val(); chequearInicio(); });
+sala.child("estado").on("value", s => {
+  estado = s.val();
+  chequearInicio();
+});
+
 sala.child("grupos").on("value", snap => {
-  if (miId && !snap.hasChild(miId)) { location.reload(); return; } // la sala fue reiniciada
+  if (miId && !snap.hasChild(miId)) {
+    localStorage.removeItem("cm_miId");
+    location.reload();
+    return;
+  }
   grupos = [];
-  snap.forEach(c => grupos.push({ id: c.key, ...c.val() }));
+  snap.forEach(c => {
+    const val = c.val();
+    if (val && val.nombre) grupos.push({ id: c.key, ...val });
+  });
   if (esAdmin) pintarAdmin();
   pintarRanking();
 });
-function chequearInicio() { if (miId && estado === "jugando" && !g) empezar(); }
+
+// Re-sincroniza cuando el celular vuelve de segundo plano
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) {
+    firebase.database().goOnline();
+    sala.child("grupos").once("value", snap => {
+      grupos = [];
+      snap.forEach(c => {
+        const val = c.val();
+        if (val && val.nombre) grupos.push({ id: c.key, ...val });
+      });
+      if (esAdmin) pintarAdmin();
+      pintarRanking();
+    });
+  }
+});
+
+function chequearInicio() {
+  if (miId && estado === "jugando" && !g) empezar();
+}
 
 /* ---------- Juego ---------- */
 function empezar() {
