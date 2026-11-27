@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
 <main id="app">
@@ -18,7 +18,7 @@
     <div class="tarjeta">
       <input id="inGrupo" placeholder="Nombre del grupo" maxlength="30" autocomplete="off">
       <textarea id="inIntegrantes" placeholder="Integrantes (uno por línea)" rows="3" maxlength="150"></textarea>
-      <button id="btnUnirse" class="btn">Unirse a la partida</button>
+      <button id="btnUnirse" class="btn">¡Empezar a cocinar!</button>
       <p id="msgLobby" class="aviso"></p>
     </div>
   </section>
@@ -26,27 +26,45 @@
   <!-- JUEGO -->
   <section id="juego" class="pantalla">
     <div id="escena">
-      <div id="hud"><span id="vidas"></span><span id="puntos">0 pts</span><span id="paso">1/4</span></div>
+      <div id="hud">
+        <span id="vidas"></span>
+        <span id="puntos">0 pts</span>
+        <span id="paso">1/4</span>
+      </div>
       <div id="items"></div>
       <img id="nube" src="assets/nube_humo.png" alt="">
     </div>
-    <div id="franja"><div id="cap"><div id="relleno"></div></div></div>
+    <div id="franja">
+      <div id="cap"><div id="relleno"></div></div>
+    </div>
     <div id="libreta">
-      <div id="vistaProblema"><div id="enunciado"></div><button id="btnVerOpc" class="btn">Ver Opciones</button></div>
-      <div id="vistaOpciones" hidden><div id="opciones"></div><button id="btnVerProb" class="btn btn-sec">Ver Problema</button></div>
+      <div id="vistaProblema">
+        <div id="enunciado"></div>
+        <button id="btnVerOpc" class="btn">Ver Opciones</button>
+      </div>
+      <div id="vistaOpciones" hidden>
+        <div id="opciones"></div>
+        <button id="btnVerProb" class="btn btn-sec">Ver Problema</button>
+      </div>
     </div>
     <div id="toast" hidden>¡Oops! Vuélvelo a intentar</div>
     <div id="logro" hidden></div>
   </section>
 
   <!-- FINAL -->
-  <section id="final" class="pantalla" style="background-image:url(assets/fondo_score.png)">
+  <section id="final" class="pantalla" style="background-image:url(assets/lobby.png)">
     <div id="mesaFinal"><img src="assets/pizza_final_mesa.png" alt="Pizza lista sobre la mesa"></div>
     <div id="tablaWrap">
-      <h2 id="tituloFinal">¡Pizza lista!</h2>
+      <h2 id="tituloFinal">🍕 ¡Pizza lista!</h2>
       <div class="scroll">
         <table id="tabla">
-          <thead><tr><th>Puesto / Grupo</th><th>Integrantes</th><th>Puntos</th></tr></thead>
+          <thead>
+            <tr>
+              <th>Puesto / Grupo</th>
+              <th>Integrantes</th>
+              <th>Puntos</th>
+            </tr>
+          </thead>
           <tbody id="ranking"></tbody>
         </table>
       </div>
@@ -59,6 +77,6 @@
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<script src="app.js"></script>
+<script src="app.js?v=4"></script>
 </body>
 </html>
