@@ -14,7 +14,7 @@ const firebaseConfig = {
 };
 
 const EJERCICIOS = [
-  {
+ { 
     pregunta: String.raw`\text{La temperatura en } ^\circ\text{C sobre una placa está dada por } T(x,y) = 3x^2 + 2xy - y^2. \text{ Un sensor en } P(1,2) \text{ se mueve en dirección de } \vec{v} = \langle 3,4 \rangle. \text{ ¿Cuál es la tasa de cambio de la temperatura en esa dirección?}`,
     opciones: {
       A: String.raw`30\;^\circ\text{C/unidad}`,
@@ -22,8 +22,7 @@ const EJERCICIOS = [
       C: String.raw`\frac{34}{5}\;^\circ\text{C/unidad}`,
       D: String.raw`34\;^\circ\text{C/unidad}`
     },
-    correcta: "B"
-  },
+    correcta: "B" },
   {
     pregunta: String.raw`\text{Dada la función } f(x,y) = x^2 + y^2 - 4x + 6y + 10, \text{ determine el punto crítico y clasifíquelo usando el criterio de la segunda derivada.}`,
     opciones: {
@@ -49,10 +48,10 @@ const EJERCICIOS = [
     opciones: {
       A: String.raw`12`,
       B: String.raw`14`,
-      C: String.raw`16`,
-      D: String.raw`20`
+      C: String.raw`20`,
+      D: String.raw`16`
     },
-    correcta: "C"
+    correcta: "D"
   }
 ];
 
